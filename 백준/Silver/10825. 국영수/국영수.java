@@ -1,48 +1,75 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 public class Main {
+
+    static List<Student> students = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
 
-        String[][] arr = new String[N][4];
-        for(int i = 0; i < N; i++){
+        int n = Integer.parseInt(br.readLine());
+
+        for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            arr[i][0] = st.nextToken();
-            arr[i][1] = st.nextToken();
-            arr[i][2] = st.nextToken();
-            arr[i][3] = st.nextToken();
+            students.add(new Student(
+                    st.nextToken(),
+                    Integer.parseInt(st.nextToken()),
+                    Integer.parseInt(st.nextToken()),
+                    Integer.parseInt(st.nextToken())
+            ));
         }
 
-        Arrays.sort(arr, new Comparator<String[]>() {
-            @Override
-            public int compare(String[] s1, String[] s2) {
-                if (Integer.parseInt(s1[1]) == Integer.parseInt(s2[1])) {
-                    if (Integer.parseInt(s1[2]) == Integer.parseInt(s2[2])) {
-                        if (Integer.parseInt(s1[3]) == Integer.parseInt(s2[3])) {
+        List<Student> sortedStudents = sortStudents();
 
-                            // 국영수 모두 같을 때 -> 사전순
-                            return s1[0].compareTo(s2[0]);
-                        }
+        for (Student student : sortedStudents) {
+            System.out.println(student.name);
+        }
+    }
 
-                        // 국영 같을 때 -> 수학 내림차순
-                        return Integer.compare(Integer.parseInt(s2[3]), Integer.parseInt(s1[3]));
+    private static List<Student> sortStudents() {
+        return students.stream()
+                .sorted(Comparator.comparingInt(Student::getKorean)
+                        .reversed()
+                        .thenComparing(Student::getEnglish)
+                        .thenComparing(Student::getMath, Comparator.reverseOrder())
+                        .thenComparing(Student::getName))
+                .collect(Collectors.toList());
+    }
 
-                    }
-                    // 국어 같을 때 -> 영어 오름차순
-                    return Integer.compare(Integer.parseInt(s1[2]), Integer.parseInt(s2[2]));
-                }
-                // 국어 내림차순
-                return Integer.compare(Integer.parseInt(s2[1]), Integer.parseInt(s1[1]));
-            }
-        });
-        for(int i = 0; i < N; i++){
-            System.out.println(arr[i][0]);
+    public static class Student {
+        String name;
+        int korean;
+        int english;
+        int math;
+
+        public Student(String name, int korean, int english, int math) {
+            this.name = name;
+            this.korean = korean;
+            this.english = english;
+            this.math = math;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getKorean() {
+            return korean;
+        }
+
+        public int getEnglish() {
+            return english;
+        }
+
+        public int getMath() {
+            return math;
         }
     }
 }
