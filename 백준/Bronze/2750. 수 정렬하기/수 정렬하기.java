@@ -16,18 +16,23 @@ public class Main {
 
         int n = Integer.parseInt(br.readLine());
 
-        List<Integer> numbers = new ArrayList<>();
+        int[] numbers = new int[n];
         for (int i = 0; i < n; i++) {
             int num = Integer.parseInt(br.readLine());
-
-            numbers.add(num);
+            numbers[i] = num;
         }
 
-        List<Integer> sorted = numbers.stream()
-                .sorted()
-                .collect(Collectors.toList());
+        for (int i = n - 1; i >= 1; i--) {
+            for (int j = 0; j < i; j++) {
+                if (numbers[j] > numbers[j + 1]) {
+                    int temp = numbers[j];
+                    numbers[j] = numbers[j + 1];
+                    numbers[j + 1] = temp;
+                }
+            }
+        }
 
-        for (int num : sorted) {
+        for (int num : numbers) {
             System.out.println(num);
         }
     }
