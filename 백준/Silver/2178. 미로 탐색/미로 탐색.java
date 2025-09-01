@@ -1,35 +1,32 @@
-
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    private static char[][] miro;
-    private static int[][] dist;
-    private static Queue<Pair> queue = new LinkedList<>();
 
-    private static int maxCount = 0;
-    private static int endX;
-    private static int endY;
+    static char[][] miro;
+    static int[][] dist;
+    static Queue<Pair> queue = new LinkedList<>();
 
-    private static int[] dX = new int[]{0, 0, 1, -1};
-    private static int[] dY = new int[]{1, -1, 0, 0};
+    static int maxCount = 0;
+    static int endX;
+    static int endY;
 
+    static int[] dX = new int[]{0, 0, 1, -1};
+    static int[] dY = new int[]{1, -1, 0, 0};
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        sc.nextLine(); //주의
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
         miro = new char[n][m];
         dist = new int[n][m];
         endX = n - 1;
         endY = m - 1;
         for (int x = 0; x < n; x++) {
-            String line = sc.nextLine();
+            String line = br.readLine();
             for (int y = 0; y < m; y++) {
                 miro[x][y] = line.charAt(y);
                 dist[x][y] = -1;
@@ -56,6 +53,14 @@ public class Main {
                 }
                 if (miro[newX][newY] == '0' || dist[newX][newY] != -1) {
                     continue;
+                }
+
+                /**
+                 * 목적지에 도착하는 순간 최단경로임 -> 바로 out
+                 */
+                if (newX == endX && newY == endY) {
+                    dist[newX][newY] = dist[p.x][p.y] + 1;
+                    return;
                 }
 
                 queue.offer(new Pair(newX, newY));
