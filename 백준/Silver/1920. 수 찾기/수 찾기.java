@@ -1,34 +1,59 @@
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
-
+/*
+100,000,000번, N <= 100,000
+O(N^2)는 불가능
+O(nlogn) = 100,000 * 3.3 * 5 =1,600,000 -> 가능
+ */
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        int n = scanner.nextInt();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        Set<Integer> standardInts = new HashSet<>();
+        int n = Integer.parseInt(br.readLine());
+        List<Integer> notSortedA = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            standardInts.add(scanner.nextInt());
+            notSortedA.add(Integer.parseInt(st.nextToken()));
         }
 
-        int m = scanner.nextInt();
+        List<Integer> A = notSortedA.stream().sorted().collect(Collectors.toList());
+
+        int m = Integer.parseInt(br.readLine());
+        st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < m; i++) {
-            int comparingInt = scanner.nextInt();
-            if (isNumberExist(comparingInt, standardInts)) {
-                System.out.println(1);
-            } else {
-                System.out.println(0);
-            }
+            int target = Integer.parseInt(st.nextToken());
+
+            sb.append(find(target, A) + "\n");
         }
+
+        System.out.println(sb);
     }
 
-    private static boolean isNumberExist(int comparingInt, Set<Integer> standardInts) {
-        if (standardInts.contains(comparingInt)) {
-            return true;
+    private static int find(int target, List<Integer> arr) {
+        int size = arr.size();
+        if (size == 0) {
+            return 0;
         }
-        return false;
+        if (size == 1) {
+            if (arr.get(0) == target) {
+                return 1;
+            }
+            return 0;
+        }
+
+        int midIndex = (size - 1) / 2;
+        int mid = arr.get(midIndex);
+
+        if (mid > target) {
+            return find(target, arr.subList(0, midIndex));
+        }
+        if (mid < target) {
+            return find(target, arr.subList(midIndex + 1, size));
+        }
+        return 1;
     }
 }
