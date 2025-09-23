@@ -1,70 +1,84 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.util.*;
+import java.io.*;
+import java.util.stream.Collectors;
 
-public class Main{
-    static ArrayList<Integer>[] list; // 인접 리스트
-    static int distanceArr[]; // 거리를 저장하는 배열
+public class Main {
+        /*
+    1~N번 도시와 M개의 단방향 도로, 모든 거리는 1
+    x -> 모든 도시로 가는 방법들 중 최단거리 == k인 모든 도시들의 번호 출력
+    1->2 : 1
+    1->3 : 1
+    1->4 : 2
+    하나도 없으면 -1 출력
 
-    public static void main(String[] args) throws IOException
-    {
+    모든 도시에 대해 bfs가 맞는 것 같음 -> depth = k가 될때까지, 그렇게 k에 도착하면 됨??
+    이때, 이미 그전에 도착한 도시는 최단 거리가 아니므로 visited 처리한다.
+
+    그래프의 경우 1->N가지로 뻗어나갈 수 있음. 어떤 자료구조로 저장하는 게 좋을까?
+     */
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken()); // 노드 수
-        int m = Integer.parseInt(st.nextToken()); // 엣지 수
-        int k = Integer.parseInt(st.nextToken()); // 원하는 거리 수
-        int x = Integer.parseInt(st.nextToken()); // 출발 노드
+        int cityCount = Integer.parseInt(st.nextToken());
+        int roadCount = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        int start = Integer.parseInt(st.nextToken());
 
-        list = new ArrayList[n + 1];
-        for(int i = 1; i < n + 1; ++i) list[i] = new ArrayList<>();
+        int[] distances = new int[cityCount + 1];
+        List<Integer>[] roads = new List[cityCount + 1];
 
-        distanceArr = new int[n + 1];
-        Arrays.fill(distanceArr, -1); // 거리를 -1로 초기화
+        for (int i = 1; i <= cityCount; i++) {
+            roads[i] = new ArrayList<>();
+            distances[i] = -1;
+        }
 
-        for(int i = 0; i < m; ++i)
-        {
+        for (int i = 0; i < roadCount; i++) {
             st = new StringTokenizer(br.readLine());
+
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
-            list[from].add(to); // from에서 to로 가는 경로 추가
+            roads[from].add(to);
         }
 
-        bfs(x); // BFS 수행
+        Queue<Integer> queue = new LinkedList<>();
+        distances[start] = 0; //시작도시는 거리가 0!!
+        queue.add(start);
+        while (!queue.isEmpty()) {
+            int from = queue.poll();
 
+//            if (distances[from] != -1) { // 시작 노드도 포함되므로 안됨
+//                continue;
+//            }
 
-        // 거리가 k인 도시 출력
-        boolean found = false;
-        for (int i = 1; i < n + 1; ++i)
-        {
-            if (distanceArr[i] == k)
-            {
-                System.out.println(i);
-                found = true;
-            }
-        }
+            List<Integer> nexts = roads[from];
 
-        if (!found) System.out.println(-1);
-
-    }
-
-    static void bfs(int startCity)
-    {
-        Queue<Integer> que = new LinkedList<>();
-        distanceArr[startCity] = 0; // 시작 도시는 거리가 0
-        que.add(startCity); // 큐에 시작 도시 추가
-        while (!que.isEmpty()) // 큐가 비어있지 않다면
-        {
-            int currentCity = que.poll();
-            for (int nextCity : list[currentCity]) // 인접 리스트에서 다음 도시를 가져옴
-            {
-                if (distanceArr[nextCity] == -1) // 거리가 정해지지 않았다면
-                {
-                    distanceArr[nextCity] = distanceArr[currentCity] + 1; // 다음 도시의 거리는 현재 도시의 거리 +1
-                    que.offer(nextCity);
+            for (int next : nexts) {
+                if (distances[next] != -1) {
+                    continue;
                 }
+                queue.offer(next);
+                distances[next] = distances[from] + 1;
             }
         }
+
+        // dist == k면 나온다
+        boolean isEmpty = true;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= cityCount; i++) {
+            if (distances[i] == k) {
+                isEmpty = false;
+                sb.append(i + "\n");
+            }
+        }
+
+        if (isEmpty) {
+            System.out.println(-1);
+            return;
+        }
+
+        System.out.println(sb);
     }
 }
