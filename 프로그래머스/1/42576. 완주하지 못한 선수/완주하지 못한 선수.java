@@ -15,11 +15,7 @@ class Solution {
         
         Map<String, Integer> completions = new HashMap<>();
         for (String com : completion) {
-            if (completions.containsKey(com)) {
-                completions.put(com, completions.get(com) + 1);
-            } else {
-                completions.put(com, 1);
-            }
+            completions.put(com, completions.getOrDefault(com, 0) + 1);
         }
         
         for (String p : participant) {
