@@ -23,15 +23,6 @@ class Solution {
         int end = start; //포함
         int sum = sequence[start];
         
-        search(start, end, sum, sequence, k);
-        
-        int[] result = queue.poll();
-        answer = new int[]{result[1], result[2]};
-        
-        return answer;
-    }
-    
-    private void search(int start, int end, int sum, int[] sequence, int k) {
         while (start <= end && end < sequence.length && start < sequence.length) {
             if (sum == k) {
                 queue.offer(new int[]{end - start + 1, start, end});
@@ -58,5 +49,10 @@ class Solution {
                 sum += sequence[++end];
             }
         }
+        
+        int[] result = queue.poll();
+        answer = new int[]{result[1], result[2]};
+        
+        return answer;
     }
 }
