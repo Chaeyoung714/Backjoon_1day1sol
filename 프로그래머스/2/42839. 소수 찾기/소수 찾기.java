@@ -8,7 +8,6 @@
 import java.util.*;
 import java.io.*;
 
-
 class Solution {
     
     static List<Integer> primes = new ArrayList<>();
@@ -51,21 +50,10 @@ class Solution {
     }
     
     private boolean isPrime (int number) {
-        int[] deleted = new int[number / 2 + 1];
-        
         for (int idx = 2; idx <= number / 2; idx++) {
-            if (deleted[idx] == 1) {
-                continue;
-            }
             if (number % idx == 0) {
                 return false;
             }
-            
-           // int mul = idx;
-          //  while (mul <= number / 2) {
-           //     deleted[mul] = 1;
-           //     mul += idx;
-           // }
         }
         return true;
     }
