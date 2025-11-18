@@ -1,6 +1,6 @@
 class Solution {
     public int[] solution(int brown, int yellow) {
-        int[] answer = new int[2]; //answer에 어떻게 넣지?
+        int[] answer = new int[2]; //answer에 어떻게 넣지
         
         int mul = brown + yellow; // row * col
         int sum = (mul + 4 - yellow) / 2; //row + col
